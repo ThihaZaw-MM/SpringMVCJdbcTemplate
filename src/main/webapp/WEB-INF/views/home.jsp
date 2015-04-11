@@ -9,6 +9,7 @@
         <title>Contact Manager Home</title>
     </head>
     <body>
+    	<h1>This is MAHAR first Spring MVC project</h1>
     	<div align="center">
 	        <h1>Contact List</h1>
 	        <h3><a href="/contact/newContact">New Contact</a></h3>
