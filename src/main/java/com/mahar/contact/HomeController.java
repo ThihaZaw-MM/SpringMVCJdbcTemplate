@@ -1,6 +1,7 @@
 package com.mahar.contact;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,11 +11,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mahar.contact.dao.ContactDAO;
 import com.mahar.contact.dao.UserDAO;
 import com.mahar.contact.model.Contact;
+import com.mahar.contact.model.Country;
 import com.mahar.contact.model.User;
 
 /**
@@ -30,10 +34,23 @@ public class HomeController {
 	
 	@Autowired
 	private UserDAO userDAO;
+	
+	List<Country> data = new ArrayList<Country>();
 
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
+	public HomeController(){
+		data.add(new Country(1,"Myanmar"));
+		data.add(new Country(1,"Malay"));
+		data.add(new Country(1,"Mongo"));
+		data.add(new Country(1,"Singapore"));
+		data.add(new Country(1,"India"));
+		data.add(new Country(1,"China"));
+		data.add(new Country(1,"Korea"));
+		data.add(new Country(1,"Japan"));
+		data.add(new Country(1,"Thailand"));
+	}
 	
 	@RequestMapping(value="/")
 	public ModelAndView listContact(ModelAndView model) throws IOException{
@@ -53,6 +70,29 @@ public class HomeController {
 		model.setViewName("ContactForm");
 		return model;
 	}
+	
+	@RequestMapping(value = "/getTags", method = RequestMethod.GET)
+	public @ResponseBody
+	List<Country> getTags(@RequestParam String tagName) {
+		System.out.println("getTagsMethod!" + tagName);
+		return simulateSearchResult(tagName);
+
+	}
+	
+	private List<Country> simulateSearchResult(String tagName) {
+
+		List<Country> result = new ArrayList<Country>();
+
+		// iterate a list and filter by tagName
+		for (Country tag : data) {
+			if (tag.getCountry().contains(tagName)) {
+				System.out.println(tag.getCountry());
+				result.add(tag);
+			}
+		}
+		return result;
+	}
+
 	
 	@RequestMapping(value = "/saveContact", method = RequestMethod.POST)
 	public ModelAndView saveContact(@ModelAttribute Contact contact) {
