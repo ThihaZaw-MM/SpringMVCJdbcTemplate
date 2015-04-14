@@ -8,6 +8,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>New/Edit Contact</title>
+<script src="<c:url value="/resources/core/jquery.1.10.2.min.js" />"></script>
+<script src="<c:url value="/resources/core/jquery.autocomplete.min.js" />"></script>
+
+
 </head>
 <body>
 	<div align="center">
@@ -26,6 +30,10 @@
 				<tr>
 					<td>Address:</td>
 					<td><form:input path="address" /></td>
+				</tr>
+				<tr>
+					<td>Country:</td>
+					<td><input type="text"  id="w-input-search" value=""></td>
 				</tr>
 				<tr>
 					<td>Telephone:</td>
@@ -48,5 +56,26 @@
 			</table>
 		</form:form>
 	</div>
+	
+	<script>
+	$(document).ready(function() {
+		
+		$('#w-input-search').autocomplete({
+			serviceUrl: '${pageContext.request.contextPath}/getTags',
+			paramName: "tagName",
+			delimiter: ",",
+		    transformResult: function(response) {
+		    	
+		        return {
+		        	
+		            suggestions: $.map($.parseJSON(response), function(item) {
+		            	
+		                return { value: item.country, data: item.id };
+		            })  
+		        };
+		    }
+		});
+	});
+	</script>
 </body>
 </html>

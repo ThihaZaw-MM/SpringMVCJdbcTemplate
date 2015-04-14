@@ -68,7 +68,6 @@ public class UserDAOImpl implements UserDAO{
 	@Override
 	public List<User> list() {
 		// TODO Auto-generated method stub
-		System.out.print("Reached Here!!");
 		String sql = "SELECT * FROM users";
 		List<User> listUser = jdbcTemplate.query(sql, new RowMapper<User>(){
 			@Override 
