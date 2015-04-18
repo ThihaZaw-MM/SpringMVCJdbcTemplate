@@ -20,6 +20,7 @@ import com.mahar.contact.dao.UserDAO;
 import com.mahar.contact.model.Contact;
 import com.mahar.contact.model.Country;
 import com.mahar.contact.model.User;
+import com.mahar.utilities.MyCrypto;
 
 /**
  * Handles requests for the application home page.
@@ -55,6 +56,19 @@ public class HomeController {
 	@RequestMapping(value="/")
 	public ModelAndView listContact(ModelAndView model) throws IOException{
 		List<Contact> listContact = contactDAO.list();
+		/*System.out.println(AppUtility.dateToString());
+		System.out.println(AppUtility.dateToString("19/08/1983"));
+		System.out.println(AppUtility.stringToDate());
+		System.out.println(AppUtility.stringToDate("19830819"));*/
+		
+		try {
+			String encrypted = MyCrypto.encrypt("Hello");
+			System.out.println(encrypted);
+			System.out.println(MyCrypto.decrypt(encrypted));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		model.addObject("listContact", listContact);
 		model.setViewName("home");
 
@@ -66,6 +80,7 @@ public class HomeController {
 		Contact newContact = new Contact();
 		List<User> userList = userDAO.list();
 		model.addObject("userList", userList);
+		//model.addObject("countryList",data);
 		model.addObject("contact", newContact);
 		model.setViewName("ContactForm");
 		return model;

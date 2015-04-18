@@ -4,8 +4,11 @@ import javax.sql.DataSource;
 
 import com.mahar.contact.dao.ContactDAO;
 import com.mahar.contact.dao.ContactDAOImpl;
+import com.mahar.contact.dao.TownshipDAO;
 import com.mahar.contact.dao.UserDAO;
 import com.mahar.contact.dao.UserDAOImpl;
+import com.mahar.contact.model.Township;
+import com.mahar.utilities.DataAccess;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -54,5 +57,10 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter{
 	@Bean
 	public UserDAO getUserDAO(){
 		return new UserDAOImpl(getDataSource());
+	}
+	
+	@Bean
+	public DataAccess<Township> getDataAccess(){
+		return new TownshipDAO(getDataSource());
 	}
 }
