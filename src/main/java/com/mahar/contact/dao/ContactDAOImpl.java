@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 
 import com.mahar.contact.model.Contact;
+import com.mahar.utilities.AppUtility;
 
 /**
  * An implementation of the ContactDAO interface.
@@ -29,17 +30,21 @@ public class ContactDAOImpl implements ContactDAO {
 
 	@Override
 	public void saveOrUpdate(Contact contact) {
+		//System.out.println("Reached to saveOrUpdate with " + contact.getName() + "-" + contact.getDateofbirth() );
 		if (contact.getId() > 0) {
 			// update
-			String sql = "UPDATE contact SET name=?, email=?, address=?, "
+			String sql = "UPDATE contact SET name=?, dateofbirth=?, email=?, address=?, "
 						+ "telephone=? WHERE contact_id=?";
-			jdbcTemplate.update(sql, new Object[] {contact.getName(), contact.getEmail(),
+			java.sql.Timestamp dob = AppUtility.formatSqlDate(contact.getDateofbirth());
+			System.out.println("In saveOrUpdate Method " + dob.toString());
+			jdbcTemplate.update(sql, new Object[] {contact.getName(), dob, contact.getEmail(),
 					contact.getAddress(), contact.getTelephone(), contact.getId()});
 		} else {
 			// insert
-			String sql = "INSERT INTO contact (name, email, address, telephone)"
-						+ " VALUES (?, ?, ?, ?)";
-			jdbcTemplate.update(sql, contact.getName(), contact.getEmail(),
+			String sql = "INSERT INTO contact (name, dateofbirth, email, address, telephone)"
+						+ " VALUES (?, ?, ?, ?, ?)";
+			java.sql.Timestamp dob = AppUtility.formatSqlDate(contact.getDateofbirth());
+			jdbcTemplate.update(sql, contact.getName(), dob, contact.getEmail(),
 					contact.getAddress(), contact.getTelephone());
 			
 		}
@@ -63,6 +68,10 @@ public class ContactDAOImpl implements ContactDAO {
 
 				aContact.setId(rs.getInt("contact_id"));
 				aContact.setName(rs.getString("name"));
+				String dob = AppUtility.formatDate(rs.getString("dateofbirth"));
+				//System.out.println(dob);
+				aContact.setDateofbirth(dob);
+				//System.out.println(aContact.getDateOfBirth());
 				aContact.setEmail(rs.getString("email"));
 				aContact.setAddress(rs.getString("address"));
 				aContact.setTelephone(rs.getString("telephone"));
@@ -86,6 +95,9 @@ public class ContactDAOImpl implements ContactDAO {
 					Contact contact = new Contact();
 					contact.setId(rs.getInt("contact_id"));
 					contact.setName(rs.getString("name"));
+					String dob = AppUtility.formatDate(rs.getString("dateofbirth"));
+					//System.out.println(dob);
+					contact.setDateofbirth( dob);
 					contact.setEmail(rs.getString("email"));
 					contact.setAddress(rs.getString("address"));
 					contact.setTelephone(rs.getString("telephone"));

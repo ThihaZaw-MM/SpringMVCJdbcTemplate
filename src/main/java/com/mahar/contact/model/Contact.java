@@ -3,6 +3,7 @@ package com.mahar.contact.model;
 public class Contact {
 	private int id;
 	private String name;
+	private String dateofbirth;
 	private String email;
 	private String address;
 	private String telephone;
@@ -10,8 +11,9 @@ public class Contact {
 	public Contact() {
 	}
 
-	public Contact(String name, String email, String address, String telephone) {
+	public Contact(String name, String dateofbirth, String email, String address, String telephone) {
 		this.name = name;
+		this.dateofbirth = dateofbirth;
 		this.email = email;
 		this.address = address;
 		this.telephone = telephone;
@@ -30,6 +32,13 @@ public class Contact {
 	}
 	public void setName(String a){
 		name = a;
+	}
+	
+	public String getDateofbirth(){
+		return this.dateofbirth;
+	}
+	public void setDateofbirth(String dateofbirth){
+		this.dateofbirth = dateofbirth;
 	}
 	
 	public String getEmail(){

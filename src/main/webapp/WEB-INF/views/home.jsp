@@ -16,6 +16,7 @@
 	        <table border="1">
 	        	<th>No</th>
 	        	<th>Name</th>
+	        	<th>Birth</th>
 	        	<th>Email</th>
 	        	<th>Address</th>
 	        	<th>Telephone</th>
@@ -25,6 +26,7 @@
 	        	<tr>
 	        		<td>${status.index + 1}</td>
 					<td>${contact.name}</td>
+					<td>${contact.dateofbirth}</td>
 					<td>${contact.email}</td>
 					<td>${contact.address}</td>
 					<td>${contact.telephone}</td>

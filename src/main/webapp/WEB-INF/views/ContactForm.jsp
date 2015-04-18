@@ -8,9 +8,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>New/Edit Contact</title>
+
 <script src="<c:url value="/resources/core/jquery.1.10.2.min.js" />"></script>
 <script src="<c:url value="/resources/core/jquery.autocomplete.min.js" />"></script>
-
+<link rel="stylesheet" href="<c:url value="/resources/core/jquery-ui.css" />">
 
 </head>
 <body>
@@ -24,6 +25,10 @@
 					<td><form:input path="name" /></td>
 				</tr>
 				<tr>
+					<td>Date of Birth:</td>
+					<td><form:input path="dateofbirth" id="date" /></td>
+				</tr>
+				<tr>
 					<td>Email:</td>
 					<td><form:input path="email" /></td>
 				</tr>
@@ -33,7 +38,9 @@
 				</tr>
 				<tr>
 					<td>Country:</td>
-					<td><input type="text"  id="w-input-search" value=""></td>
+					<td>
+						<input type="text" id="w-input-search" value="">
+					</td>
 				</tr>
 				<tr>
 					<td>Telephone:</td>
@@ -57,6 +64,8 @@
 		</form:form>
 	</div>
 	
+	<script src="<c:url value="/resources/core/jquery.js" />"></script>
+	<script src="<c:url value="/resources/core/jquery-ui.js" />"></script>
 	<script>
 	$(document).ready(function() {
 		
@@ -75,6 +84,10 @@
 		        };
 		    }
 		});
+	});
+	
+	$(document).ready(function(){
+		$("#date").datepicker({ dateFormat: 'dd/mm/yy' });
 	});
 	</script>
 </body>
