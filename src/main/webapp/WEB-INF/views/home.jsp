@@ -40,5 +40,27 @@
 				</c:forEach>	        	
 			</table>
     	</div>
+    	<div align="center">
+    		<h1>Township List</h1>
+    		<h3><a href="/contact/newTownship">New Township</a></h3>
+    		<table border="1">
+    			<th>No</th>
+	        	<th>Name</th>
+	        	<th>Division</th>
+	        	<th>Action</th>
+	        	<c:forEach var="township" items="${listTownship}" varStatus="status">
+	        		<tr>
+	        			<td>${status.index + 1 }</td>
+	        			<td>${township.townshipname}</td>
+	        			<td>${township.division}</td>
+	        			<td>
+	        				<a href="/contact/editTownship?id=${township.id}">Edit</a>
+							&nbsp;&nbsp;&nbsp;&nbsp;
+							<a href="/contact/deleteTownship?id=${township.id}">Delete</a>
+	        			</td>
+	        		</tr>
+	        	</c:forEach>
+    		</table>
+    	</div>
     </body>
 </html>

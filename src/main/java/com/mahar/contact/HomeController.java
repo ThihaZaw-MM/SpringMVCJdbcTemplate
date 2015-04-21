@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.mahar.contact.dao.ContactDAO;
+import com.mahar.contact.dao.TownshipDAO;
 import com.mahar.contact.dao.UserDAO;
 import com.mahar.contact.model.Contact;
 import com.mahar.contact.model.Country;
+import com.mahar.contact.model.Township;
 import com.mahar.contact.model.User;
 import com.mahar.utilities.MyCrypto;
 
@@ -35,6 +37,8 @@ public class HomeController {
 	
 	@Autowired
 	private UserDAO userDAO;
+	@Autowired
+	private TownshipDAO townshipDAO;
 	
 	List<Country> data = new ArrayList<Country>();
 
@@ -56,6 +60,7 @@ public class HomeController {
 	@RequestMapping(value="/")
 	public ModelAndView listContact(ModelAndView model) throws IOException{
 		List<Contact> listContact = contactDAO.list();
+		List<Township> listTownship = townshipDAO.getList();
 		/*System.out.println(AppUtility.dateToString());
 		System.out.println(AppUtility.dateToString("19/08/1983"));
 		System.out.println(AppUtility.stringToDate());
@@ -70,7 +75,42 @@ public class HomeController {
 			e.printStackTrace();
 		}
 		model.addObject("listContact", listContact);
+		model.addObject("listTownship", listTownship);
 		model.setViewName("home");
+
+		return model;
+	}
+	
+	@RequestMapping(value = "/newTownship", method = RequestMethod.GET)
+	private ModelAndView newTownship(ModelAndView model){
+		Township newTownship = new Township();
+		model.addObject("township",newTownship);
+		model.setViewName("TownshipForm");
+		return model;
+	}
+	
+	@RequestMapping(value = "/saveTownship", method = RequestMethod.POST)
+	public ModelAndView saveContact(@ModelAttribute Township township) {
+		townshipDAO.setEntity(township);
+		townshipDAO.saveOrUpdate();
+		return new ModelAndView("redirect:/");
+	}
+	
+	@RequestMapping(value = "/deleteTownship", method = RequestMethod.GET)
+	public ModelAndView deleteTownship(HttpServletRequest request) {
+		int townshipId = Integer.parseInt(request.getParameter("id"));
+		townshipDAO.getEntity().setId(townshipId);
+		townshipDAO.delete();
+		return new ModelAndView("redirect:/");
+	}
+	
+	@RequestMapping(value = "/editTownship", method = RequestMethod.GET)
+	public ModelAndView editTownship(HttpServletRequest request) {
+		int townshipId = Integer.parseInt(request.getParameter("id"));
+		townshipDAO.getEntity().setId(townshipId);
+		Township township = townshipDAO.get();
+		ModelAndView model = new ModelAndView("TownshipForm");
+		model.addObject("township", township);
 
 		return model;
 	}
@@ -111,9 +151,7 @@ public class HomeController {
 	
 	@RequestMapping(value = "/saveContact", method = RequestMethod.POST)
 	public ModelAndView saveContact(@ModelAttribute Contact contact) {
-		
 		contactDAO.saveOrUpdate(contact);
-		
 		return new ModelAndView("redirect:/");
 	}
 	
