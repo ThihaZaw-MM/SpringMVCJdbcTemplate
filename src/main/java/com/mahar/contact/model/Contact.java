@@ -8,6 +8,22 @@ public class Contact {
 	private String address;
 	private String telephone;
 
+	private String actionlink;
+
+	/**
+	 * @return the actionlink
+	 */
+	public String getActionlink() {
+		return actionlink;
+	}
+
+	/**
+	 * @param actionlink the actionlink to set
+	 */
+	public void setActionlink(String actionlink) {
+		this.actionlink = actionlink;
+	}
+
 	public Contact() {
 	}
 
@@ -34,10 +50,10 @@ public class Contact {
 		name = a;
 	}
 	
-	public String getDateofbirth(){
+	public String getdateofbirth(){
 		return this.dateofbirth;
 	}
-	public void setDateofbirth(String dateofbirth){
+	public void setdateofbirth(String dateofbirth){
 		this.dateofbirth = dateofbirth;
 	}
 	

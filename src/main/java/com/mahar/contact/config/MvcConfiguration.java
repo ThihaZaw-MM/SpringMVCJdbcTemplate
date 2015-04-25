@@ -7,8 +7,6 @@ import com.mahar.contact.dao.ContactDAOImpl;
 import com.mahar.contact.dao.TownshipDAO;
 import com.mahar.contact.dao.UserDAO;
 import com.mahar.contact.dao.UserDAOImpl;
-import com.mahar.contact.model.Township;
-import com.mahar.utilities.DataAccess;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -44,7 +42,7 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter{
 		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
 		dataSource.setUrl("jdbc:mysql://localhost:3306/contactdb");
 		dataSource.setUsername("root");
-		dataSource.setPassword("successthz");
+		dataSource.setPassword("password");
 		
 		return dataSource;
 	}
@@ -60,7 +58,7 @@ public class MvcConfiguration extends WebMvcConfigurerAdapter{
 	}
 	
 	@Bean
-	public DataAccess<Township> getDataAccess(){
+	public TownshipDAO getDataAccess(){
 		return new TownshipDAO(getDataSource());
 	}
 }
