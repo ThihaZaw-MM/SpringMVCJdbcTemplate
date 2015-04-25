@@ -1,66 +1,122 @@
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-   "http://www.w3.org/TR/html4/loose.dtd">
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Contact Manager Home</title>
-    </head>
-    <body>
-    	<h1>This is MAHAR first Spring MVC project</h1>
-    	<div align="center">
-	        <h1>Contact List</h1>
-	        <h3><a href="/contact/newContact">New Contact</a></h3>
-	        <table border="1">
-	        	<th>No</th>
-	        	<th>Name</th>
-	        	<th>Birth</th>
-	        	<th>Email</th>
-	        	<th>Address</th>
-	        	<th>Telephone</th>
-	        	<th>Action</th>
-	        	
-				<c:forEach var="contact" items="${listContact}" varStatus="status">
-	        	<tr>
-	        		<td>${status.index + 1}</td>
-					<td>${contact.name}</td>
-					<td>${contact.dateofbirth}</td>
-					<td>${contact.email}</td>
-					<td>${contact.address}</td>
-					<td>${contact.telephone}</td>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Spring pagination using data tables</title>
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.0/css/jquery.dataTables.css">
+<script type="text/javascript" src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+<script type="text/javascript" src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.js"></script>
+<script type="text/javascript">
+ 
+    //Plug-in to fetch page data 
+	jQuery.fn.dataTableExt.oApi.fnPagingInfo = function ( oSettings )
+	{
+		return {
+			"iStart":         oSettings._iDisplayStart,
+			"iEnd":           oSettings.fnDisplayEnd(),
+			"iLength":        oSettings._iDisplayLength,
+			"iTotal":         oSettings.fnRecordsTotal(),
+			"iFilteredTotal": oSettings.fnRecordsDisplay(),
+			"iPage":          oSettings._iDisplayLength === -1 ?
+				0 : Math.ceil( oSettings._iDisplayStart / oSettings._iDisplayLength ),
+			"iTotalPages":    oSettings._iDisplayLength === -1 ?
+				0 : Math.ceil( oSettings.fnRecordsDisplay() / oSettings._iDisplayLength )
+		};
+	};
+ 
+$(document).ready(function() {
+ 
+	$("#example").dataTable( {
+        "bProcessing": true,
+        "bServerSide": true,
+        "sort": "position",
+        //bStateSave variable you can use to save state on client cookies: set value "true" 
+        "bStateSave": false,
+        //Default: Page display length
+        "iDisplayLength": 10,
+        //We will use below variable to track page number on server side(For more information visit: http://legacy.datatables.net/usage/options#iDisplayStart)
+        "iDisplayStart": 0,
+        "fnDrawCallback": function () {
+            //Get page numer on client. Please note: number start from 0 So
+            //for the first page you will see 0 second page 1 third page 2...
+            //Un-comment below alert to see page number
+        	//alert("Current page number: "+this.fnPagingInfo().iPage);    
+        },         
+        "sAjaxSource": "springPaginationDataTables.web",
+        "aoColumns": [
+            
+            { "mData": "name" },
+            { "mData": "dateofbirth" },
+            { "mData": "email" },
+            { "mData": "address" },
+            { "mData": "telephone" },
+            { "mData": "actionlink"}, 
+        ]
+    } );
+ 
+} );
+ 
+</script>
+</head>
+<body>
+<form:form action="" method="GET">
+<h2 >Spring MVC pagination using data tables<br><br></h2>
+<a href="/contact/newContact">New Contact</a>
+<table width="70%" style="border: 3px;background: rgb(243, 244, 248);"><tr><td>
+	<table id="example" class="display" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+<!--                 <th>Id</th> -->
+     			<th>Name</th>
+     			<th>Birth</th>
+     			<th>email</th>
+     			<th>address</th>
+     			<th>telephone</th>
+     			<th>Action</th>
+            </tr>
+        </thead>       
+    </table>
+    </td></tr></table>
+</form:form>
+	<div align="center">
+		<h1>New/Edit Contact</h1>
+		<form:form action="saveContact" method="post" modelAttribute="contact">
+			<table>
+				<form:hidden path="id"/>
+				<tr>
+					<td>Name:</td>
+					<td><form:input path="name" /></td>
+				</tr>
+				<tr>
+					<td>Date of Birth:</td>
+					<td><form:input path="dateofbirth" id="date" /></td>
+				</tr>
+				<tr>
+					<td>Email:</td>
+					<td><form:input path="email" /></td>
+				</tr>
+				<tr>
+					<td>Address:</td>
+					<td><form:input path="address" /></td>
+				</tr>
+				<tr>
+					<td>Country:</td>
 					<td>
-						<a href="/contact/editContact?id=${contact.id}">Edit</a>
-						&nbsp;&nbsp;&nbsp;&nbsp;
-						<a href="/contact/deleteContact?id=${contact.id}">Delete</a>
+						<input type="text" id="w-input-search" value="">
 					</td>
-							
-	        	</tr>
-				</c:forEach>	        	
+				</tr>
+				<tr>
+					<td>Telephone:</td>
+					<td><form:input path="telephone" /></td>
+				</tr>
+				<tr>
+					<td colspan="2" align="center"><input type="submit" value="Save"></td>
+				</tr>
 			</table>
-    	</div>
-    	<div align="center">
-    		<h1>Township List</h1>
-    		<h3><a href="/contact/newTownship">New Township</a></h3>
-    		<table border="1">
-    			<th>No</th>
-	        	<th>Name</th>
-	        	<th>Division</th>
-	        	<th>Action</th>
-	        	<c:forEach var="township" items="${listTownship}" varStatus="status">
-	        		<tr>
-	        			<td>${status.index + 1 }</td>
-	        			<td>${township.townshipname}</td>
-	        			<td>${township.division}</td>
-	        			<td>
-	        				<a href="/contact/editTownship?id=${township.id}">Edit</a>
-							&nbsp;&nbsp;&nbsp;&nbsp;
-							<a href="/contact/deleteTownship?id=${township.id}">Delete</a>
-	        			</td>
-	        		</tr>
-	        	</c:forEach>
-    		</table>
-    	</div>
-    </body>
+		</form:form>
+	</div>
+</body>
 </html>

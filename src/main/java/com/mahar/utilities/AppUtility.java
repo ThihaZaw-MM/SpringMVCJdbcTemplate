@@ -37,7 +37,6 @@ public class AppUtility {
 			Date l_date =  format.parse(date);
 			return dateToString(l_date);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return "";
 		}
@@ -75,7 +74,6 @@ public class AppUtility {
 			Date l_date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date);
 			return stringToDate(l_date);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
@@ -91,9 +89,14 @@ public class AppUtility {
 			//System.out.println(timestamp.toString());
 			return timestamp;
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public static java.sql.Timestamp formatSqlDate(){
+		Date l_date = new Date();
+		java.sql.Timestamp timestamp = new java.sql.Timestamp(l_date.getTime());
+		return timestamp;
 	}
 }

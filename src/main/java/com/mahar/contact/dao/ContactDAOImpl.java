@@ -35,7 +35,7 @@ public class ContactDAOImpl implements ContactDAO {
 			// update
 			String sql = "UPDATE contact SET name=?, dateofbirth=?, email=?, address=?, "
 						+ "telephone=? WHERE contact_id=?";
-			java.sql.Timestamp dob = AppUtility.formatSqlDate(contact.getDateofbirth());
+			java.sql.Timestamp dob = AppUtility.formatSqlDate(contact.getdateofbirth());
 			System.out.println("In saveOrUpdate Method " + dob.toString());
 			jdbcTemplate.update(sql, new Object[] {contact.getName(), dob, contact.getEmail(),
 					contact.getAddress(), contact.getTelephone(), contact.getId()});
@@ -43,7 +43,7 @@ public class ContactDAOImpl implements ContactDAO {
 			// insert
 			String sql = "INSERT INTO contact (name, dateofbirth, email, address, telephone)"
 						+ " VALUES (?, ?, ?, ?, ?)";
-			java.sql.Timestamp dob = AppUtility.formatSqlDate(contact.getDateofbirth());
+			java.sql.Timestamp dob = AppUtility.formatSqlDate(contact.getdateofbirth());
 			jdbcTemplate.update(sql, contact.getName(), dob, contact.getEmail(),
 					contact.getAddress(), contact.getTelephone());
 			
@@ -70,7 +70,7 @@ public class ContactDAOImpl implements ContactDAO {
 				aContact.setName(rs.getString("name"));
 				String dob = AppUtility.formatDate(rs.getString("dateofbirth"));
 				//System.out.println(dob);
-				aContact.setDateofbirth(dob);
+				aContact.setdateofbirth(dob);
 				//System.out.println(aContact.getDateOfBirth());
 				aContact.setEmail(rs.getString("email"));
 				aContact.setAddress(rs.getString("address"));
@@ -81,6 +81,39 @@ public class ContactDAOImpl implements ContactDAO {
 		});
 		return listContact;
 	}
+	
+	@Override
+	public List<Contact> list(Integer pageNumber, Integer limit) {
+		// implementation details goes here...
+		int start = ((pageNumber-1)*limit);
+		
+		String sql = "SELECT * FROM contact ORDER BY contact_id LIMIT " + start + "," + limit;
+		//System.out.println(sql);
+		List<Contact> listContact = jdbcTemplate.query(sql, new RowMapper<Contact>(){
+			@Override 
+			public Contact mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Contact aContact = new Contact();
+				int contactid = rs.getInt("contact_id");
+				aContact.setId(contactid);
+				aContact.setName(rs.getString("name"));
+				String dob = AppUtility.formatDate(rs.getString("dateofbirth"));
+				//System.out.println(dob);
+				aContact.setdateofbirth(dob);
+				//System.out.println(aContact.getDateOfBirth());
+				aContact.setEmail(rs.getString("email"));
+				aContact.setAddress(rs.getString("address"));
+				aContact.setTelephone(rs.getString("telephone"));
+
+				String editLink = "<a href=\"/contact/editContact?id=" + contactid + "\">Edit</a>";
+				String deleteLink = "<a href=\"/contact/deleteContact?id=" + contactid + "\">Delete</a>";
+				aContact.setActionlink(editLink + "&nbsp;&nbsp;&nbsp;&nbsp;" + deleteLink);
+				System.out.println(editLink);
+				return aContact;
+			}
+		});
+		return listContact;
+	}
+	
 
 	@Override
 	public Contact get(int contactId) {
@@ -97,7 +130,7 @@ public class ContactDAOImpl implements ContactDAO {
 					contact.setName(rs.getString("name"));
 					String dob = AppUtility.formatDate(rs.getString("dateofbirth"));
 					//System.out.println(dob);
-					contact.setDateofbirth( dob);
+					contact.setdateofbirth( dob);
 					contact.setEmail(rs.getString("email"));
 					contact.setAddress(rs.getString("address"));
 					contact.setTelephone(rs.getString("telephone"));
@@ -106,5 +139,12 @@ public class ContactDAOImpl implements ContactDAO {
 				return null;
 			}
 		});
+	}
+
+	@Override
+	public int getCount() {
+		String sql = "SELECT COUNT(*) FROM contact";
+		int count = (Integer) jdbcTemplate.queryForObject(sql, Integer.class);
+		return count;
 	}
 }

@@ -15,10 +15,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mahar.contact.dao.ContactDAO;
 import com.mahar.contact.dao.TownshipDAO;
 import com.mahar.contact.dao.UserDAO;
 import com.mahar.contact.model.Contact;
+import com.mahar.contact.model.ContactJsonObject;
 import com.mahar.contact.model.Country;
 import com.mahar.contact.model.Township;
 import com.mahar.contact.model.User;
@@ -59,26 +62,43 @@ public class HomeController {
 	
 	@RequestMapping(value="/")
 	public ModelAndView listContact(ModelAndView model) throws IOException{
-		List<Contact> listContact = contactDAO.list();
-		List<Township> listTownship = townshipDAO.getList();
-		/*System.out.println(AppUtility.dateToString());
-		System.out.println(AppUtility.dateToString("19/08/1983"));
-		System.out.println(AppUtility.stringToDate());
-		System.out.println(AppUtility.stringToDate("19830819"));*/
-		
-		try {
-			String encrypted = MyCrypto.encrypt("Hello");
-			System.out.println(encrypted);
-			System.out.println(MyCrypto.decrypt(encrypted));
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		model.addObject("listContact", listContact);
-		model.addObject("listTownship", listTownship);
+		Contact newContact = new Contact();
+		model.addObject("contact", newContact);
 		model.setViewName("home");
 
 		return model;
+	}
+	
+	@RequestMapping(value = "/springPaginationDataTables.web", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody String springPaginationDataTables(HttpServletRequest  request) throws IOException {
+		//Fetch the page number from client
+		
+    	Integer pageNumber = 0;
+    	if (null != request.getParameter("iDisplayStart"))
+    		pageNumber = (Integer.valueOf(request.getParameter("iDisplayStart"))/10)+1;		
+    	
+    	//Fetch search parameter
+    	//String searchParameter = request.getParameter("sSearch");
+    	
+    	//Fetch Page display length
+    	Integer pageDisplayLength = Integer.valueOf(request.getParameter("iDisplayLength"));
+    	
+    	System.out.println("springPaginationDataTables " + pageNumber);
+    	System.out.println("springPaginationDataTables " + pageDisplayLength);
+    	List<Contact> listContact = contactDAO.list(pageNumber, pageDisplayLength);
+    	int count = contactDAO.getCount();
+    	
+    	ContactJsonObject personJsonObject = new ContactJsonObject();
+		//Set Total display record
+		personJsonObject.setiTotalDisplayRecords(count);
+		//Set Total record
+		personJsonObject.setiTotalRecords(count);
+		personJsonObject.setAaData(listContact);
+		
+		Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		String json2 = gson.toJson(personJsonObject);
+	
+		return json2;
 	}
 	
 	@RequestMapping(value = "/newTownship", method = RequestMethod.GET)
